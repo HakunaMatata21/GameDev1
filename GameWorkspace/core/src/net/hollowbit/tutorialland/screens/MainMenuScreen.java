@@ -3,6 +3,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import net.hollowbit.tutorialland.SpaceGame;
+import net.hollowbit.tutorialland.tools.ScrollingBackground;
+
 import com.badlogic.gdx.graphics.Texture;
 
 
@@ -30,6 +32,9 @@ playButtonActive = new Texture("play_button_active.png"); //инициализи
 playButtonInactive = new Texture("play_button_inactive.png"); //инициализиране на текстура
 exitButtonActive = new Texture("exit_button_active.png"); //инициализиране на текстура
 exitButtonInactive = new Texture("exit_button_inactive.png"); //инициализиране на текстура
+
+game.scrollingBackground.setSpeedFixed(true);
+game.scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
 }
 	@Override
 	public void show() 
@@ -46,6 +51,9 @@ exitButtonInactive = new Texture("exit_button_inactive.png"); //инициали
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		game.batch.begin();
+		
+		game.scrollingBackground.updateAndRender(delta,game.batch); // създаване на звездният фон.
+
 		//Рисуване на бутона Изход.
 		int x = SpaceGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2; 
 		if(Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x && SpaceGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > EXIT_BUTTON_Y)
@@ -57,11 +65,7 @@ exitButtonInactive = new Texture("exit_button_inactive.png"); //инициали
 		else
 		{
 		game.batch.draw(exitButtonInactive,x,EXIT_BUTTON_Y,EXIT_BUTTON_WIDTH,EXIT_BUTTON_HEIGHT);
-		if(Gdx.input.isTouched())
-		{
-		this.dispose(); // изчиства предишния екран(добра практика е винаги да се изчистват след приключване))
-		game.setScreen(new MainGameScreen(game) );
-		}
+		
 		}
 		
 		//Рисуване на бутона Играй
@@ -69,6 +73,9 @@ exitButtonInactive = new Texture("exit_button_inactive.png"); //инициали
 		if(Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && SpaceGame.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > PLAY_BUTTON_Y) 
 		{
 		game.batch.draw(playButtonActive,x,PLAY_BUTTON_Y,PLAY_BUTTON_WIDTH,PLAY_BUTTON_HEIGHT);
+		if(Gdx.input.justTouched())
+		this.dispose();
+		game.setScreen(new MainGameScreen(game));
 		}
 		else
 		{

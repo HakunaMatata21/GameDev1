@@ -13,6 +13,6 @@ public class DesktopLauncher
 		config.foregroundFPS = 60;
 		config.width = SpaceGame.WIDTH;
 		config.height = SpaceGame.HEIGHT;
-		config.resizable = false; // dali potrebitelq moje da raztqga prozoreca(po default e true)
+		config.resizable = false; //Дали потребителя може да разтяга прозореца(default e true) 
 	}
 }

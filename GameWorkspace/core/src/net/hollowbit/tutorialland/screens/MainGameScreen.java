@@ -94,6 +94,8 @@ public class MainGameScreen implements Screen
 		rolls[2] = new Animation<TextureRegion>(SHIP_ANIMATION_SPEED, rollSpriteSheet[0]);//когато кораба няма наклон.
 		rolls[3] = new Animation<TextureRegion>(SHIP_ANIMATION_SPEED, rollSpriteSheet[3]);////sprite-a когато кораба е малко наклонен надясно.(или бързо натиснат десен бутон)
 		rolls[4] = new Animation<TextureRegion>(SHIP_ANIMATION_SPEED, rollSpriteSheet[4]);//sprite-a когато кораба е максимално наклонен надясно.
+	
+		game.scrollingBackground.setSpeedFixed(false); //без ускоряване.
 	}
 	
 	@Override
@@ -268,6 +270,8 @@ public class MainGameScreen implements Screen
 		Gdx.gl.glClearColor(0, 0, 0, 1); //RGB стойности държащи цветовете на фон-а,това са GL стойности така,че 0 = 0,1 = 255.(нагласят се чрез float).
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.begin();
+		
+		game.scrollingBackground.updateAndRender(delta,game.batch); // създаване на звездният фон.
 		
 		GlyphLayout scoreLayout = new GlyphLayout(scoreFont, "" + score);
 		scoreFont.draw(game.batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 10); //Рисува резултата в центъра.
