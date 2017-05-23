@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import net.hollowbit.tutorialland.SpaceGame;
 import net.hollowbit.tutorialland.tools.CollisionRect;
 
 public class Asteroid 
@@ -20,7 +21,7 @@ public class Asteroid
 	public Asteroid(float x) //конструктора на астероида.
 	{
 	this.x = x;
-	this.y = Gdx.graphics.getHeight(); //
+	this.y = SpaceGame.HEIGHT; //
 	this.rect = new CollisionRect(x,y,WIDTH,HEIGHT); //инициализиране на кол.рект
 			
 	if(texture == null) //ако не е заредена текстурата

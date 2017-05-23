@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import net.hollowbit.tutorialland.SpaceGame;
+
 public class ScrollingBackground 
 {
 public static final int DEFAULT_SPEED = 80;
@@ -24,7 +26,7 @@ image = new Texture("stars_background.png"); //зареждане на изоб�
 y1 = 0;
 y2 = image.getHeight();
 goalSpeed = DEFAULT_SPEED;
-imageScale = 0;
+imageScale = SpaceGame.WIDTH / image.getWidth();
 speedFixed = true;
 
 }
@@ -61,13 +63,9 @@ if(y2 + image.getHeight() * imageScale <= 0)
 y2 = y1 + image.getHeight() * imageScale;
 
 //Render,рисуване на 2те изображения с различни Y стойности(X-овете винаги ще са 0)
-batch.draw(image, 0, y1, Gdx.graphics.getWidth(), image.getHeight() * imageScale);
-batch.draw(image, 0, y2, Gdx.graphics.getWidth(), image.getHeight() * imageScale);
+batch.draw(image, 0, y1, SpaceGame.WIDTH, image.getHeight() * imageScale);
+batch.draw(image, 0, y2, SpaceGame.WIDTH, image.getHeight() * imageScale);
 
-}
-public void resize(int width,int height)
-{
-imageScale = width / image.getWidth();
 }
 
 public void setSpeed(int goalSpeed)

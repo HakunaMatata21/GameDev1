@@ -55,6 +55,8 @@ public class MainGameScreen implements Screen
 	ArrayList<Explosion> explosions;//инициализиране на списък с масиви за експлозиите.
 	
 	Texture blank;//инициализиране на текстурата(изображението с един пиксел) който ще използваме за рисуването на кръвта.
+	Texture controls; //инициализиране на текстурата(контролите).
+	
 	
 	BitmapFont scoreFont;//инициализиране на шрифта който ще използваме за рисуването на резултата.
 	
@@ -75,6 +77,9 @@ public class MainGameScreen implements Screen
 		playerRect = new CollisionRect(0,0,SHIP_WIDTH,SHIP_HEIGHT); //създаване на кол.рект-а на играча който инициализирахме.
 		
 		blank = new Texture("blank.png");//създаване на текстурата за рисуването на кръвта която инициализирахме.
+		
+		if(SpaceGame.IS_MOBILE) //Ако играта е пусната на Андроид или IOS.
+		controls = new Texture("controls.png");//създаване на текстурата за рисуването на видимите контроли.(ако не е на мобилно устр. няма смисъл да създаваме видими контроли.)
 		
 		score = 0; //по подразбиране резултата започва от 0.
 		
@@ -109,7 +114,7 @@ public class MainGameScreen implements Screen
 	{
 		//Код за стреляне
 		shootTimer += delta;
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && shootTimer >= SHOOT_WAIT_TIME) //ако се натисне бутона за стреляне и играча е изчакал повече или равно на 0,3 секунди изстреляй нов куршум.
+		if ((isLeft() || isRight()) && shootTimer >= SHOOT_WAIT_TIME) //ако се натисне бутона за наляво или надясно и играча е изчакал повече или равно на 0,3 секунди изстреляй нов куршум.
 		{
 			shootTimer = 0;
 		    int offset = 4;
@@ -130,7 +135,7 @@ public class MainGameScreen implements Screen
 		if (asteroidSpawnTimer <= 0) 
 		{
 			asteroidSpawnTimer = random.nextFloat() * (MAX_ASTEROID_SPAWN_TIME - MIN_ASTEROID_SPAWN_TIME) + MIN_ASTEROID_SPAWN_TIME; //оправя времето което ще бъде изминато преди създаването на астероида.
-			asteroids.add(new Asteroid(random.nextInt(Gdx.graphics.getWidth() - Asteroid.WIDTH))); //създава астероида като се грижи за това астероида да бъде създаден на случайна локация,но да не излиза от екрана.
+			asteroids.add(new Asteroid(random.nextInt(SpaceGame.WIDTH - Asteroid.WIDTH))); //създава астероида като се грижи за това астероида да бъде създаден на случайна локация,но да не излиза от екрана.
 		}
 		
 		//Код за обновяване на астероидите.
@@ -162,14 +167,14 @@ public class MainGameScreen implements Screen
 				explosions.removeAll(explosionsToRemove); // премахва всички sprite-ове на експлозии които са приключили.
 		
 		//Код за движение.
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) //ако е натиснат левият бутон.
+		if (isLeft()) //ако е натиснат левият бутон.
 		{
 			x -= SPEED * Gdx.graphics.getDeltaTime(); // премествай кораба наляво.
 			
 			if (x < 0) // ще се погрижи кораба да не излиза от лявата страна на екрана.
 				x = 0;
 			
-			if (Gdx.input.isKeyJustPressed(Keys.LEFT) && !Gdx.input.isKeyPressed(Keys.RIGHT) && roll > 0) //Ако играча само е натиснал левият бутон без да го задържа и не е натиснал десният бутон едновременно.
+			if (isJustLeft() && !isRight() && roll > 0) //Ако играча само е натиснал левият бутон без да го задържа и не е натиснал десният бутон едновременно.
 
 			{
 				rollTimer = 0; //рестартирай таймера за sprite-a на кораба.
@@ -200,15 +205,15 @@ public class MainGameScreen implements Screen
 		
 		
 		
-		if (Gdx.input.isKeyPressed(Keys.RIGHT)) //Ако е натиснат десният бутон.
+		if (isRight()) //Ако е натиснат десният бутон.
 		{
 			x += SPEED * Gdx.graphics.getDeltaTime();
 			
-			if (x + SHIP_WIDTH > Gdx.graphics.getWidth()) //ако кораба излиза от екрана отдясно.
-				x = Gdx.graphics.getWidth() - SHIP_WIDTH; //грижи се за това кораба да не излиза отдясно на екрана.
+			if (x + SHIP_WIDTH > SpaceGame.WIDTH) //ако кораба излиза от екрана отдясно.
+				x = SpaceGame.WIDTH - SHIP_WIDTH; //грижи се за това кораба да не излиза отдясно на екрана.
 			
 			
-			if (Gdx.input.isKeyJustPressed(Keys.RIGHT) && !Gdx.input.isKeyPressed(Keys.LEFT) && roll < 4) //ако играча само е натиснал десния бутон и не е натиснал левия бутон едновременно.
+			if (isJustRight() && !isLeft() && roll < 4) //ако играча само е натиснал десния бутон и не е натиснал левия бутон едновременно.
 			{
 				rollTimer = 0; //рестарт на таймера.
 				roll++;
@@ -263,7 +268,17 @@ public class MainGameScreen implements Screen
 				asteroidsToRemove.add(asteroid); //добави астероида в списъка с масиви за премахване.
 				health -= 0.1; //намали кръвта с 10%.
 			}
-}
+
+
+			//При свършване на кръвта отиване в GameOverScreen.
+			if (health <= 0) 
+			{
+				this.dispose();
+				game.setScreen(new GameOverScreen(game, score));
+				return;
+            }
+		
+		}
 		asteroids.removeAll(asteroidsToRemove); //изчисти всички астероиди събрани във списъка с масиви на астероидите за премахване.
 		stateTime += delta;
 
@@ -274,7 +289,7 @@ public class MainGameScreen implements Screen
 		game.scrollingBackground.updateAndRender(delta,game.batch); // създаване на звездният фон.
 		
 		GlyphLayout scoreLayout = new GlyphLayout(scoreFont, "" + score);
-		scoreFont.draw(game.batch, scoreLayout, Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2, Gdx.graphics.getHeight() - scoreLayout.height - 10); //Рисува резултата в центъра.
+		scoreFont.draw(game.batch, scoreLayout, SpaceGame.WIDTH / 2 - scoreLayout.width / 2, SpaceGame.HEIGHT - scoreLayout.height - 10); //Рисува резултата в центъра.
 		
 		for (Bullet bullet : bullets) //за всеки куршум.
 		{
@@ -301,12 +316,50 @@ public class MainGameScreen implements Screen
 	    else //ако кръвта е по-малко от 20%
 		game.batch.setColor(Color.RED); //цвета й ще е червен.
 
-	    game.batch.draw(blank,0,0,Gdx.graphics.getWidth() * health,5); //Рисува лентата с кръв като използва един бял пиксел,рисувайки го по цялата широчина на екрана умножено по стойността на кръвта,така когато кръвта намалява лентичката ще се смалява. 
+	    game.batch.draw(blank,0,0,SpaceGame.WIDTH * health,5); //Рисува лентата с кръв като използва един бял пиксел,рисувайки го по цялата широчина на екрана умножено по стойността на кръвта,така когато кръвта намалява лентичката ще се смалява. 
 	    game.batch.setColor(Color.WHITE);//бял цвят на лентата.
 		
 	    game.batch.draw(rolls[roll].getKeyFrame(stateTime, true), x, y, SHIP_WIDTH, SHIP_HEIGHT); //рисува кораба.
 		
+	    if(SpaceGame.IS_MOBILE)
+	    {
+	    //нарисувай левите контроли.
+	    game.batch.setColor(Color.RED);
+	    game.batch.draw(controls,0, 0, SpaceGame.WIDTH / 2, SpaceGame.HEIGHT,0, 0, SpaceGame.WIDTH / 2, SpaceGame.HEIGHT, false, false);
+	    
+	    //нарисувай десните контроли.
+	    game.batch.setColor(Color.BLUE);
+	    game.batch.draw(controls,SpaceGame.WIDTH / 2, 0, SpaceGame.WIDTH / 2, SpaceGame.HEIGHT,0, 0, SpaceGame.WIDTH / 2, SpaceGame.HEIGHT, true, false); //последните 2 параметъра са flipX и flipY  тоест за обръщане на картината.
+	    
+	    game.batch.setColor(Color.WHITE); //добра практика е да се рестартира цвета.
+
+	    }
+	    
 		game.batch.end();
+	}
+	
+	//Код за движение и на компютър и на андроид.
+	private boolean isRight()
+	{
+	return Gdx.input.isKeyPressed(Keys.RIGHT) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().x >= SpaceGame.WIDTH); 	
+	}
+	
+	private boolean isLeft()
+	{
+		return Gdx.input.isKeyPressed(Keys.LEFT) || (Gdx.input.isTouched() && game.cam.getInputInGameWorld().x < SpaceGame.WIDTH);	
+	
+	}
+	
+	private boolean isJustRight()
+	{
+		return Gdx.input.isKeyJustPressed(Keys.RIGHT) || (Gdx.input.justTouched() && game.cam.getInputInGameWorld().x >= SpaceGame.WIDTH);	
+	
+	}
+	
+	private boolean isJustLeft()
+	{
+		return Gdx.input.isKeyJustPressed(Keys.LEFT) || (Gdx.input.justTouched() && game.cam.getInputInGameWorld().x < SpaceGame.WIDTH);	
+	
 	}
 
 	@Override

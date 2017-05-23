@@ -49,8 +49,7 @@ public class GameOverScreen implements Screen
 
 	
 	
-	}
-	
+}
 	
 	@Override
 	public void show()
@@ -68,24 +67,24 @@ public class GameOverScreen implements Screen
 		game.scrollingBackground.updateAndRender(delta,game.batch); // създаване на звездният фон.
 
 		
-		game.batch.draw(gameOverBanner,Gdx.graphics.getWidth() / 2 - BANNER_WIDTH / 2,Gdx.graphics.getHeight() - BANNER_HEIGHT - 15,BANNER_WIDTH,BANNER_HEIGHT);//Ще постави банер-а в средата и 15 пиксела под горната граница.
+		game.batch.draw(gameOverBanner,SpaceGame.WIDTH / 2 - BANNER_WIDTH / 2,SpaceGame.HEIGHT - BANNER_HEIGHT - 15,BANNER_WIDTH,BANNER_HEIGHT);//Ще постави банер-а в средата и 15 пиксела под горната граница.
 		
 		GlyphLayout scoreLayout = new GlyphLayout(scoreFont,"Score: \n" + score,Color.WHITE,0,Align.left,false); // ще изпише резултата,0 е широчината която няма да използваме затова е 0,false е bool asking wheter to wrap it or no?
 		GlyphLayout highscoreLayout = new GlyphLayout(scoreFont,"Highscore: \n" + highscore,Color.WHITE,0,Align.left,false); //ще изпише най-високият резултат.
-		scoreFont.draw(game.batch,scoreLayout,Gdx.graphics.getWidth() / 2 - scoreLayout.width / 2,Gdx.graphics.getHeight()-BANNER_HEIGHT - 15 * 2);
-		scoreFont.draw(game.batch,highscoreLayout,Gdx.graphics.getWidth() / 2 - highscoreLayout.width / 2,Gdx.graphics.getHeight()-BANNER_HEIGHT - scoreLayout.height - 15 * 3);
+		scoreFont.draw(game.batch,scoreLayout,SpaceGame.WIDTH / 2 - scoreLayout.width / 2,SpaceGame.HEIGHT-BANNER_HEIGHT - 15 * 2);
+		scoreFont.draw(game.batch,highscoreLayout,SpaceGame.WIDTH / 2 - highscoreLayout.width / 2,SpaceGame.HEIGHT-BANNER_HEIGHT - scoreLayout.height - 15 * 3);
 
 		GlyphLayout tryAgainLayout = new GlyphLayout(scoreFont,"Try Again");
 		GlyphLayout mainMenuLayout = new GlyphLayout(scoreFont,"Main Menu");
 		
-		float tryAgainX = Gdx.graphics.getWidth() / 2 - tryAgainLayout.width / 2; //Позиционира Х на "Try Again" във GameOverScreen
-		float tryAgainY = Gdx.graphics.getHeight() /2 - tryAgainLayout.height / 2; //Позиционира Y на "Try Again" във GameOverScreen
-		float mainMenuX = Gdx.graphics.getWidth() / 2 - mainMenuLayout.width / 2; //Позиционира Х на "Main Menu" във GameOverScreen
-		float mainMenuY = Gdx.graphics.getHeight() /2 - mainMenuLayout.height / 2 - tryAgainLayout.height - 15; //Позиционира Y на "Main Menu" във GameOverScreen
+		float tryAgainX = SpaceGame.WIDTH / 2 - tryAgainLayout.width / 2; //Позиционира Х на "Try Again" във GameOverScreen
+		float tryAgainY = SpaceGame.HEIGHT /2 - tryAgainLayout.height / 2; //Позиционира Y на "Try Again" във GameOverScreen
+		float mainMenuX = SpaceGame.WIDTH / 2 - mainMenuLayout.width / 2; //Позиционира Х на "Main Menu" във GameOverScreen
+		float mainMenuY = SpaceGame.HEIGHT /2 - mainMenuLayout.height / 2 - tryAgainLayout.height - 15; //Позиционира Y на "Main Menu" във GameOverScreen
 		
 		
-		float touchX = Gdx.input.getX();
-		float touchY=Gdx.graphics.getHeight()- Gdx.input.getY();
+		float touchX = game.cam.getInputInGameWorld().x;
+		float touchY=SpaceGame.HEIGHT- game.cam.getInputInGameWorld().y;
 		
 		
 		//Код за изпълнение при натискане на tryAgain или mainMenu

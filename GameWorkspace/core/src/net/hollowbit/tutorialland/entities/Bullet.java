@@ -3,6 +3,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import net.hollowbit.tutorialland.SpaceGame;
 import net.hollowbit.tutorialland.tools.CollisionRect;
 
 public class Bullet 
@@ -34,7 +35,7 @@ texture = new Texture("bullet.png"); //зареди изображението �
 public void update(float deltatime)
 {
 y += SPEED * deltatime; // куршума ще пътува със 500 пиксела в секунда.
-if(y > Gdx.graphics.getHeight()) //ако куршума е излезнал от екрана.
+if(y > SpaceGame.HEIGHT) //ако куршума е излезнал от екрана.
 remove = true; //задействай унищожаването му.
 rect.move(x, y); //това ще премества кол.рект-а редом с куршума за да са на една и съща локация
 

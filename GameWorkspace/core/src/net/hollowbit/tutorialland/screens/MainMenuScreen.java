@@ -56,7 +56,7 @@ game.scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
 
 		//Рисуване на бутона Изход.
 		int x = SpaceGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2; 
-		if(Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x && SpaceGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > EXIT_BUTTON_Y)
+		if(game.cam.getInputInGameWorld().x < x + EXIT_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x && SpaceGame.HEIGHT - game.cam.getInputInGameWorld().y < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && SpaceGame.HEIGHT - game.cam.getInputInGameWorld().y > EXIT_BUTTON_Y)
 		{
 		game.batch.draw(exitButtonActive,x,EXIT_BUTTON_Y,EXIT_BUTTON_WIDTH,EXIT_BUTTON_HEIGHT);
 		if(Gdx.input.isTouched())
@@ -70,12 +70,14 @@ game.scrollingBackground.setSpeed(ScrollingBackground.DEFAULT_SPEED);
 		
 		//Рисуване на бутона Играй
 		x = SpaceGame.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2; 
-		if(Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && SpaceGame.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && SpaceGame.HEIGHT - Gdx.input.getY() > PLAY_BUTTON_Y) 
+		if(game.cam.getInputInGameWorld().x < x + PLAY_BUTTON_WIDTH && game.cam.getInputInGameWorld().x > x && SpaceGame.HEIGHT - game.cam.getInputInGameWorld().y < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && SpaceGame.HEIGHT - game.cam.getInputInGameWorld().y > PLAY_BUTTON_Y) 
 		{
 		game.batch.draw(playButtonActive,x,PLAY_BUTTON_Y,PLAY_BUTTON_WIDTH,PLAY_BUTTON_HEIGHT);
 		if(Gdx.input.justTouched())
+		{
 		this.dispose();
 		game.setScreen(new MainGameScreen(game));
+		}
 		}
 		else
 		{
